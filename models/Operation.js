@@ -12,11 +12,15 @@ class Operation extends Sequelize.Model {
     getByType(request, response, operation_type) {
         let date = request.query.date;
         Operation.findAll({
-            where: { operation_type: operation_type, date: date },
+            //where: { operation_type: operation_type, date: date },
+            where: [
+                sequelize.where(sequelize.col('operation_type'), operation_type),
+                sequelize.where(sequelize.fn('substr', sequelize.col('date'), 1, 10), date)
+            ],
             include: [Agent]
         })
             .then(rows => response.json({ rows: rows }))
-            .catch(err => response.status(400).json(err));
+            .catch(err => {console.log(err); response.status(400).json(err)});
     }
 
     /**
@@ -32,7 +36,7 @@ class Operation extends Sequelize.Model {
             if (row == null) {
                 Operation.create(body).then(row => response.json(row)).catch(err => response.status(400).json(err));
             } else {
-                response.status(400).json({ error: { numero: "Cette reference existe deja" } });
+                response.status(400).json({ error: { reference: "Cette reference existe deja" } });
             }
         }).catch(err => response.status(400).json(err));
     }
@@ -79,7 +83,7 @@ Operation.init({
         allowNull: false
     },
     date: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         allowNull: false
     },
     reference: {
