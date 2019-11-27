@@ -1,0 +1,22 @@
+{
+  "name": "kioback",
+  "version": "1.0.0",
+  "description": "Backend for KIO",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node .",
+    "migration": "node touch-migration.js"
+  },
+  "author": "Christ0ph3",
+  "license": "ISC",
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "moment": "^2.24.0",
+    "sequelize": "^5.21.2",
+    "sqlite3": "^4.1.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
