@@ -20,7 +20,7 @@ class Operation extends Sequelize.Model {
             include: [Agent]
         })
             .then(rows => response.json({ rows: rows }))
-            .catch(err => {console.log(err); response.status(400).json(err)});
+            .catch(err => { console.log(err); response.status(400).json(err) });
     }
 
     /**
@@ -70,6 +70,21 @@ class Operation extends Sequelize.Model {
     delete(request, response, operation_type) {
         let id = request.params.id;
         Operation.destroy({ where: { id: id, operation_type: operation_type } }).then(res => response.json(res)).catch(err => response.status(400).json(err));
+    }
+
+    /**
+     * Get data by date
+     * @param {Request} request HTTP Request
+     * @param {Response} response HTTP Response
+     */
+    statsByDate(request, response) {
+        let date = request.params.date;
+        sequelize.query(`select substr(A.numero, 1, 3) as OP, sum(amount) as A, sum(commission) as C, operation_type from operation O
+        join agent A on A.id = O.agent_id
+        where substr(date, 1, 10) = ?
+        group by operation_type, OP`, { type: sequelize.QueryTypes.SELECT, replacements: [date] }).then((r) => {
+            response.json(r);
+        }).catch(e => response.status(400).json(e));
     }
 }
 

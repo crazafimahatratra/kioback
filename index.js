@@ -40,6 +40,9 @@ app.route('/depots/:id')
     .put((request, response) => operationModel.update(request, response, 'D'))
     .delete((request, response) => operationModel.delete(request, response, 'D'));
 
+app.route('/stats/operation/:date')
+    .get(operationModel.statsByDate)
+
 initializer.init().then(() => {
     var server = app.listen(8080, function () {
         var host = server.address().address;
