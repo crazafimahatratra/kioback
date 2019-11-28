@@ -99,6 +99,20 @@ class Operation extends Sequelize.Model {
             response.json(r);
         }).catch(e => response.status(400).json(e));
     }
+
+    /**
+     * Get data by year
+     * @param {Request} request HTTP Request
+     * @param {Response} response HTTP Response
+     */
+    statsByYear(request, response) {
+        let year = request.params.year;
+        sequelize.query(`select sum(amount) as amount, sum(commission) as commission, substr(date, 6, 2) as month, operation_type from operation
+        where substr(date, 1, 4) = ?
+        group by substr(date, 6, 2), operation_type order by month`, { type: sequelize.QueryTypes.SELECT, replacements: [year] }).then(r => {
+            response.json(r);
+        }).catch(e => response.status(400).json(e));
+    }
     
 }
 
