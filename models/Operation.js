@@ -85,6 +85,21 @@ class Operation extends Sequelize.Model {
             response.json(r);
         }).catch(e => response.status(400).json(e));
     }
+
+    /**
+     * Get data by operator
+     * @param {Request} request HTTP Request
+     * @param {Response} response HTTP Response
+     */
+    statsByOperator(request, response) {
+        let date = request.params.date;
+        sequelize.query(`select sum(amount) as amount, sum(commission) as commission, substr(customer, 1, 3) as operator from operation O
+        where substr(date, 1, 10) = ?
+        group by substr(customer, 1, 3)`, { type: sequelize.QueryTypes.SELECT, replacements: [date] }).then(r => {
+            response.json(r);
+        }).catch(e => response.status(400).json(e));
+    }
+    
 }
 
 Operation.init({

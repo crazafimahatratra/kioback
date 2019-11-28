@@ -51,6 +51,9 @@ app.route('/transferts/:id')
 app.route('/stats/operation/:date')
     .get(operationModel.statsByDate)
 
+app.route('/stats/operation/operator/:date')
+    .get(operationModel.statsByOperator);
+
 initializer.init().then(() => {
     var server = app.listen(8080, function () {
         var host = server.address().address;
