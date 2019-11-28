@@ -79,8 +79,7 @@ class Operation extends Sequelize.Model {
      */
     statsByDate(request, response) {
         let date = request.params.date;
-        sequelize.query(`select sum(amount) as A, sum(commission) as C, operation_type from operation O
-        join agent A on A.id = O.agent_id
+        sequelize.query(`select sum(amount) as amount, sum(commission) as commission, operation_type from operation O
         where substr(date, 1, 10) = ?
         group by operation_type`, { type: sequelize.QueryTypes.SELECT, replacements: [date] }).then((r) => {
             response.json(r);
