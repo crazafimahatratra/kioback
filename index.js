@@ -40,6 +40,14 @@ app.route('/depots/:id')
     .put((request, response) => operationModel.update(request, response, 'D'))
     .delete((request, response) => operationModel.delete(request, response, 'D'));
 
+app.route('/transferts')
+    .get((request, response) => { operationModel.getByType(request, response, 'T'); })
+    .post((request, response) => operationModel.create(request, response, 'T'));
+
+app.route('/transferts/:id')
+    .put((request, response) => operationModel.update(request, response, 'T'))
+    .delete((request, response) => operationModel.delete(request, response, 'T'));
+
 app.route('/stats/operation/:date')
     .get(operationModel.statsByDate)
 
