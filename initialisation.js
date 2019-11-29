@@ -1,9 +1,9 @@
 let fs = require('fs');
 let path = require('path');
 let sequelize = require('./connection')
+let migrationsPath = "migrations";
 
 module.exports = class Initialisation {
-    migrationsPath = "migrations";
 
     /**
      * Initialize database
@@ -14,7 +14,7 @@ module.exports = class Initialisation {
         let p2 = this.createTableMigration();
         let p3 = this.getMigratedData();
         return Promise.all([p1, p2, p3]).then((result) => {
-            fs.readdirSync(this.migrationsPath).filter((f) => { return f.endsWith(".sql") }).sort().forEach((file) => {
+            fs.readdirSync(migrationsPath).filter((f) => { return f.endsWith(".sql") }).sort().forEach((file) => {
                 this.migrateFile(file);
             })
         })
@@ -44,7 +44,7 @@ module.exports = class Initialisation {
      * @param {string} file Filename
      */
     migrateFile(file) {
-        let filename = path.join(this.migrationsPath, file);
+        let filename = path.join(migrationsPath, file);
         let content = fs.readFileSync(filename).toString();
         let sequence = 1;
         content.split(';').filter((s) => { return s.trim().length > 0 }).forEach((sql) => {
