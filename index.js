@@ -1,6 +1,7 @@
 let Initialisation = require('./initialisation');
 let initializer = new Initialisation();
 let express = require("express");
+let moment = require('moment');
 let bodyParser = require('body-parser');
 let Agent = require('./models/Agent');
 let Operation = require('./models/Operation')
@@ -62,6 +63,14 @@ app.route('/stats/operation/yearly/:year')
 app.route('/bills')
     .get(billModel.all)
     .post(billModel.create);
+
+app.route('/bills/newref')
+    .get((_request, response) => {
+        response.json(`F${moment().format('YYYYMMDDHHmmss')}`);
+    });
+
+app.route('/operations/:date')
+    .get(operationModel.getByDate);
 
 initializer.init().then(() => {
     var server = app.listen(8080, function () {

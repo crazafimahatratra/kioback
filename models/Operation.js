@@ -12,7 +12,6 @@ class Operation extends Sequelize.Model {
     getByType(request, response, operation_type) {
         let date = request.query.date;
         Operation.findAll({
-            //where: { operation_type: operation_type, date: date },
             where: [
                 sequelize.where(sequelize.col('operation_type'), operation_type),
                 sequelize.where(sequelize.fn('substr', sequelize.col('date'), 1, 10), date)
@@ -20,6 +19,22 @@ class Operation extends Sequelize.Model {
             include: [Agent]
         })
             .then(rows => response.json({ rows: rows }))
+            .catch(err => { console.log(err); response.status(400).json(err) });
+    }
+
+    /**
+     * Get all operations in a date
+     * @param {Request} request HTTP Request
+     * @param {Response} response HTTP Response
+     */
+    getByDate(request, response) {
+        let date = request.params.date;
+        Operation.findAll({
+            where: [
+                sequelize.where(sequelize.fn('substr', sequelize.col('date'), 1, 10), date)
+            ],
+            include: [Agent]
+        }).then(rows => response.json({ rows: rows }))
             .catch(err => { console.log(err); response.status(400).json(err) });
     }
 
@@ -113,7 +128,7 @@ class Operation extends Sequelize.Model {
             response.json(r);
         }).catch(e => response.status(400).json(e));
     }
-    
+
 }
 
 Operation.init({
