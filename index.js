@@ -4,9 +4,11 @@ let express = require("express");
 let bodyParser = require('body-parser');
 let Agent = require('./models/Agent');
 let Operation = require('./models/Operation')
+let Bill = require('./models/Bill');
 
 let agentModel = new Agent();
 let operationModel = new Operation();
+let billModel = new Bill();
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,6 +58,10 @@ app.route('/stats/operation/operator/:date')
 
 app.route('/stats/operation/yearly/:year')
     .get(operationModel.statsByYear);
+
+app.route('/bills')
+    .get(billModel.all)
+    .post(billModel.create);
 
 initializer.init().then(() => {
     var server = app.listen(8080, function () {
