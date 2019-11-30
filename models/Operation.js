@@ -23,11 +23,11 @@ class Operation extends Sequelize.Model {
     }
 
     /**
-     * Get all operations in a date
+     * Get all available operations in a date
      * @param {Request} request HTTP Request
      * @param {Response} response HTTP Response
      */
-    getByDate(request, response) {
+    getAvailable(request, response) {
         let date = request.params.date;
         Operation.findAll({
             where: [

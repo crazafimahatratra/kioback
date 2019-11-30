@@ -1,7 +1,6 @@
 let Sequelize = require('sequelize');
 let sequelize = require('../connection')
 let moment = require('moment');
-let BillItem = require('./BillItem');
 
 class Bill extends Sequelize.Model {
     /**
@@ -35,7 +34,6 @@ class Bill extends Sequelize.Model {
         let id = request.params.id;
         Bill.findOne({
             where: { id },
-            include: [{ model: BillItem }]
         }).then(row => response.json(row)).catch(error => response.status(400).json(error));
     }
 }
@@ -64,5 +62,4 @@ Bill.init({
     freezeTableName: true,
     timestamps: false
 });
-Bill.hasMany(BillItem, { foreignKey: 'bill_id' });
 module.exports = Bill;
