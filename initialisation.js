@@ -47,16 +47,21 @@ module.exports = class Initialisation {
         let filename = path.join(migrationsPath, file);
         let content = fs.readFileSync(filename).toString();
         let sequence = 1;
+        let queries = [];
         content.split(';').filter((s) => { return s.trim().length > 0 }).forEach((sql) => {
             let done = this.migrated.filter((m) => {
                 return m.migration == file && m.seq == sequence
             }).length > 0;
-            console.log(`Migration of ${file} ${sequence} : ${done ? 'Already migrated' : 'OK'} ***`);
+            console.log(`Migration of ${file} ${sequence} : ${done ? 'Already migrated' : 'To migrate'} ***`);
             if (!done) {
-                sequelize.query(sql).then(() => {
-                    sequelize.query("INSERT INTO migration(migration, seq) VALUES(?, ?)", { replacements: [file, sequence++] });
-                });
+                queries.push({file: file, sql: sql, sequence: sequence});
             }
+            sequence++;
+        });
+        queries.forEach(query => {
+            sequelize.query(query.sql).then(() => {
+                sequelize.query("INSERT INTO migration(migration, seq) VALUES(?, ?)", { replacements: [query.file, query.sequence] });
+            });
         });
     }
 }
