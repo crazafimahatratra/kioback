@@ -1,5 +1,6 @@
 let Sequelize = require('sequelize');
 let sequelize = require('../connection');
+let Operation = require('./Operation');
 
 class BillItem extends Sequelize.Model {
     /**
@@ -9,11 +10,21 @@ class BillItem extends Sequelize.Model {
      */
     create(request, response) {
         let body = request.body
-        BillItem.create({bill_id: body.bill_id, operation_id: body.operation_id, qty: body.qty, price: body.price}).then(row => {
-            response.json(row);
-        }).catch(error => {
-            response.status(400).json(error);
-        })
+        Operation.findOne({
+            where: { id: body.operation_id }
+        }).then((operation) => {
+            if (operation == null) {
+                response.status(400).json({
+                    error: `Operation ${body.operation_id} does not exists`
+                });
+            } else {
+                BillItem.create({ bill_id: body.bill_id, operation_id: body.operation_id, qty: 1, price: operation.amount }).then(row => {
+                    response.json(row);
+                }).catch(error => {
+                    response.status(400).json(error);
+                })
+            }
+        }).catch(error => response.status(400).json(error));
     }
 }
 
