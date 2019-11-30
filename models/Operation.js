@@ -1,6 +1,8 @@
 let Sequelize = require('sequelize');
 let sequelize = require('../connection');
 let Agent = require('./Agent');
+let Bill = require('./Bill');
+const Op = Sequelize.Op;
 
 class Operation extends Sequelize.Model {
     /**
@@ -31,7 +33,8 @@ class Operation extends Sequelize.Model {
         let date = request.params.date;
         Operation.findAll({
             where: [
-                sequelize.where(sequelize.fn('substr', sequelize.col('date'), 1, 10), date)
+                sequelize.where(sequelize.fn('substr', sequelize.col('date'), 1, 10), date),
+                { bill_id: { [Op.eq]: null } }
             ],
             include: [Agent]
         }).then(rows => response.json({ rows: rows }))
@@ -159,6 +162,10 @@ Operation.init({
     commission: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    bill_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true
     }
 }, {
     sequelize,
@@ -168,4 +175,5 @@ Operation.init({
 });
 
 Operation.belongsTo(Agent, { foreignKey: 'agent_id' });
+Operation.belongsTo(Bill, { foreignKey: 'bill_id' });
 module.exports = Operation;
