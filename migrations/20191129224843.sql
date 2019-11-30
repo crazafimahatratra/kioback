@@ -11,7 +11,9 @@ CREATE TABLE bill_item (
     bill_id      INTEGER REFERENCES bill (id) ON DELETE CASCADE
                                               ON UPDATE CASCADE,
     operation_id INTEGER REFERENCES operation (id) ON DELETE CASCADE
-                                                   ON UPDATE CASCADE,
+                                                   ON UPDATE CASCADE
+                         UNIQUE,
     qty          INTEGER NOT NULL,
     price        INTEGER NOT NULL
 );
+

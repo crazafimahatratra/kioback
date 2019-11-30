@@ -6,10 +6,12 @@ let bodyParser = require('body-parser');
 let Agent = require('./models/Agent');
 let Operation = require('./models/Operation')
 let Bill = require('./models/Bill');
+let BillItem = require('./models/BillItem');
 
 let agentModel = new Agent();
 let operationModel = new Operation();
 let billModel = new Bill();
+let billItemModel = new BillItem();
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -68,6 +70,9 @@ app.route('/bills/newref')
     .get((_request, response) => {
         response.json(`F${moment().format('YYYYMMDDHHmmss')}`);
     });
+
+app.route('/bills/items')
+    .post(billItemModel.create);
 
 app.route('/operations/:date')
     .get(operationModel.getByDate);
