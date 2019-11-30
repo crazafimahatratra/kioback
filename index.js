@@ -71,6 +71,9 @@ app.route('/bills/newref')
         response.json(`F${moment().format('YYYYMMDDHHmmss')}`);
     });
 
+app.route('/bills/:id')
+    .get(billModel.row);
+
 app.route('/bills/items')
     .post(billItemModel.create);
 

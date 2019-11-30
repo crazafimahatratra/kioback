@@ -1,7 +1,5 @@
 let Sequelize = require('sequelize');
 let sequelize = require('../connection');
-let Bill = require('./Bill');
-let Operation = require('./Operation');
 
 class BillItem extends Sequelize.Model {
     /**
@@ -43,6 +41,4 @@ BillItem.init({
     timestamps: false
 });
 
-BillItem.belongsTo(Bill, { foreignKey: 'bill_id' });
-BillItem.belongsTo(Operation, {foreignKey: 'operation_id'});
 module.exports = BillItem;
